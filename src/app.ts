@@ -2,6 +2,7 @@ import express, { type Application, type Request, type Response } from 'express'
 import dotenv from 'dotenv';
 // import pool from "./config/db.js";
 import { initializeDatabase } from "./config/initDb.js";
+import authRoutes from "./routes/authRoutes.js";
 
 // Load environmental variables
 dotenv.config();
@@ -23,3 +24,5 @@ app.listen(PORT, () => {
 
 // Initialize the database tables
 initializeDatabase();
+
+app.use('/api/auth', authRoutes);
