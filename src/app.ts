@@ -1,6 +1,7 @@
 import express, { type Application, type Request, type Response } from 'express';
 import dotenv from 'dotenv';
-import pool from "./config/db.js";
+// import pool from "./config/db.js";
+import { initializeDatabase } from "./config/initDb.js";
 
 // Load environmental variables
 dotenv.config();
@@ -8,7 +9,7 @@ dotenv.config();
 const app: Application = express();
 const PORT = process.env.PORT || 3000;
 
-// Converts icnoming JSON requests into JavaScript objects
+// Converts incoming JSON requests into JavaScript objects
 app.use(express.json());
 
 // Basic health check route
@@ -19,3 +20,6 @@ app.get('/', (req: Request, res: Response) => {
 app.listen(PORT, () => {
   console.log(`Server now running on http://localhost:${PORT}`);
 });
+
+// Initialize the database tables
+initializeDatabase();
