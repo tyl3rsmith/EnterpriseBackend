@@ -1,5 +1,6 @@
 import express, { type Application, type Request, type Response } from 'express';
 import dotenv from 'dotenv';
+import pool from "./config/db.js";
 
 // Load environmental variables
 dotenv.config();
