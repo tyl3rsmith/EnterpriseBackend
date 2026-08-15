@@ -6,5 +6,8 @@ const router = Router();
 
 // Protected route for creating a new organization
 router.post("/create", authenticateToken, createOrganization);
+router.get("/create", authenticateToken, (req, res) => {
+    res.status(200).json({ message: "Organization creation endpoint is working!" });
+});
 
 export default router;

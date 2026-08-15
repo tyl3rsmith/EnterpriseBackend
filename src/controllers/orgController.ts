@@ -20,12 +20,20 @@ export const createOrganization = async (req: AuthenticatedRequest, res: Respons
         const orgResult = await client.query(
             `INSERT INTO organizations (name, created_by_user_id)
             VALUES ($1, $2)
-            RETURNING name, created_by_user_id, created_at`,
+            RETURNING id, name, created_by_user_id, created_at`,
             [name, userId]
         );
 
         const newOrganization = orgResult.rows[0];
-        
+        const orgId = newOrganization.id;
+
+        // insert into membership table to link user to organization
+        await client.query(
+            `INSERT INTO memberships (user_id, organization_id, role)
+            VALUES ($1, $2, 'OWNER')`,
+            [userId, orgId]
+        );
+
         // Commit the transaction
         await client.query('COMMIT');
 
