@@ -2,6 +2,7 @@ import express, { type Application, type Request, type Response } from 'express'
 import dotenv from 'dotenv';
 import { initializeDatabase } from "./config/initDb.js";
 import authRoutes from "./routes/authRoutes.js";
+import orgRoutes from "./routes/orgRoutes.js";
 
 dotenv.config();
 
@@ -20,6 +21,9 @@ app.get('/', (req: Request, res: Response) => {
 
 // Authentication routes
 app.use('/api/auth', authRoutes);
+
+// Organization routes
+app.use('/api/org', orgRoutes);
 
 // Start the application
 const startServer = async () => {
