@@ -1,9 +1,9 @@
 import { type Request, type Response } from 'express';
 import bcrypt from 'bcrypt';
-import pool from '../config/db.js';
 import jwt from 'jsonwebtoken';
+import {findUserByEmailOrUsername, createUser, findUserByUsername} from '../models/userModel.js';
 
-export const signUp = async (req: Request, res: Response) => {
+export const signUpController = async (req: Request, res: Response) => {
     try {
         const {username, email, password} = req.body;
 
@@ -14,12 +14,9 @@ export const signUp = async (req: Request, res: Response) => {
         }
 
         // Check if the user already exists
-        const userCheck = await pool.query(
-            `SELECT id FROM users WHERE email = $1 OR username = $2`,
-            [email, username]
-        );
+        const existingUser = await findUserByEmailOrUsername(email, username);
 
-        if (userCheck.rows.length > 0) {
+        if (existingUser) {
             res.status(400).json({ error: "User already exists." });
             return;
         }
@@ -29,16 +26,10 @@ export const signUp = async (req: Request, res: Response) => {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
         // Insert the new user into the database
-        const newUser = await pool.query(
-            `INSERT INTO users (username, email, password)
-            VALUES ($1, $2, $3)
-            RETURNING id, username, email, created_at`,
-            [username, email, hashedPassword]
-        );
+        const newUser = await createUser(username, email, hashedPassword);
 
         // Respond with the newly created user (excluding the password)
-        const user = newUser.rows[0];
-        res.status(201).json({ message: "User created successfully.", user });
+        res.status(201).json({ message: "User created successfully.", newUser });
 
     } catch (error) {
         console.error("Error during sign up:", error);
@@ -46,7 +37,7 @@ export const signUp = async (req: Request, res: Response) => {
     }
 };
 
-export const signIn = async (req: Request, res: Response) => {
+export const signInController = async (req: Request, res: Response) => {
     try {
         const { username, password } = req.body;
 
@@ -57,17 +48,12 @@ export const signIn = async (req: Request, res: Response) => {
         }
 
         // find user in database
-        const userQuery = await pool.query(
-            `SELECT * FROM users WHERE username = $1`,
-            [username]
-        );
+        const user = await findUserByUsername(username);
 
-        if (userQuery.rows.length === 0) {
+        if (!user) {
             res.status(401).json({ error: "Invalid username or password." });
             return;
         }
-
-        const user = userQuery.rows[0];
 
         // Compare the provided password with the hashed password in the database
         const isPasswordValid = await bcrypt.compare(password, user.password);
