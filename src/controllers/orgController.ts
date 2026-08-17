@@ -41,7 +41,7 @@ export const inviteUserToOrganizationController = async (req: AuthenticatedReque
             return;
         }
 
-        if (!Number.isInteger(organizationId)) {
+        if (!Number.isInteger(organizationId) || organizationId <= 0) {
             res.status(400).json({ error: "Invalid organization ID." });
             return;
         }

@@ -12,7 +12,7 @@ export const requireRole = (allowedRoles: Role[]) => {
             const userId = req.user?.userId;
 
             if (!Number.isInteger(organizationId) || organizationId <= 0) {
-                res.status(400).json({ error: "Organization ID is required." });
+                res.status(400).json({ error: "Invalid organization ID." });
                 return;
             }
 

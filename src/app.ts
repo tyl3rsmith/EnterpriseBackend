@@ -6,8 +6,6 @@ import orgRoutes from "./routes/orgRoutes.js";
 
 dotenv.config();
 
-console.log(process.env.DATABASE_URL);
-
 const app: Application = express();
 const PORT = process.env.PORT || 3000;
 

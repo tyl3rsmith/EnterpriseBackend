@@ -34,7 +34,7 @@ export const initializeDatabase = async () => {
         -- Create the documents table
         CREATE TABLE IF NOT EXISTS documents (
             id SERIAL PRIMARY KEY,
-            organization_id INT REFERENCES organizations(id) ON DELETE CASCADE,
+            organization_id INT NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
             title VARCHAR(255) NOT NULL,
             content TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

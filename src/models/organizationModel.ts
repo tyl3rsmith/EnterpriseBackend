@@ -3,7 +3,7 @@ import pool from "../config/db.js";
 export interface Organization {
     id: number;
     name: string;
-    created_by_user_id: number;
+    created_by_user_id: number | null;
     created_at: Date;
 }
 

@@ -5,15 +5,27 @@ import { signInController } from "../controllers/authController.js";
 const router = Router();
 
 // Route for user sign-up
-router.post("/signup", signUpController);
-router.get("/signup", (req, res) => {
-    res.status(200).json({ message: "Sign-up endpoint is working!" });
+router.post(
+    "/signup",
+    signUpController
+);
+
+// sign up health check end point
+router.get(
+    "/signup",
+    (req, res) => { res.status(200).json({ message: "Sign-up endpoint is working!" });
 });
 
 // Route for user sign-in
-router.post("/signin", signInController);
-router.get("/signin", (req, res) => {
-    res.status(200).json({ message: "Sign-in endpoint is working!" });
+router.post(
+    "/signin",
+    signInController
+);
+
+// sign in health check end point
+router.get(
+    "/signin",
+    (req, res) => { res.status(200).json({ message: "Sign-in endpoint is working!" });
 });
 
 export default router;
