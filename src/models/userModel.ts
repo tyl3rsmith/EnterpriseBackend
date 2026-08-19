@@ -8,7 +8,7 @@ export interface User {
     created_at: Date;
 }
 
-export const findUserByEmailOrUsername = async (username: string, email: string): Promise<User | null> => {
+export const findUserByEmailOrUsername = async (email: string, username: string): Promise<User | null> => {
     const result = await pool.query(
         `SELECT id FROM users
         WHERE username = $1 OR email = $2`,
