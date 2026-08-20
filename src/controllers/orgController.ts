@@ -7,12 +7,7 @@ import { findUserByEmail } from '../models/userModel.js';
 export const createOrganizationController = async (req: AuthenticatedRequest, res: Response) => {
     try {
         const { name } = req.body; 
-        const userId = req.user?.userId // Grabs the user ID from our middleware token check
-
-        // Make sure user is authenticated
-        if (!userId) {
-            return res.status(401).json({ error: "Unauthorized." });
-        }
+        const userId = req.user!.userId // Grabs the user ID from our middleware token check
 
         if (!name) {
             return res.status(400).json({ error: "Organization name is required." });
@@ -32,7 +27,7 @@ export const createOrganizationController = async (req: AuthenticatedRequest, re
 export const inviteUserToOrganizationController = async (req: AuthenticatedRequest, res: Response) => {
     try {
         const organizationId = Number(req.params.organizationId); // Grabs the organization ID from the URL parameters
-        const userId = req.user?.userId;
+        const userId = req.user!.userId;
         const { email, role } = req.body;
 
         // validate input
@@ -51,11 +46,7 @@ export const inviteUserToOrganizationController = async (req: AuthenticatedReque
             res.status(400).json({ error: "Invalid role. Must be 'ADMIN' or 'MEMBER'." });
             return;
         }
-
-        if (!userId) {
-            return res.status(401).json({ error: "Unauthorized." });
-        }
-
+        
         // verify that the user is authenticated
         const membershipRole = await getMembershipRole(userId, organizationId);
 

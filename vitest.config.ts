@@ -5,5 +5,6 @@ export default defineConfig({
         environment: "node",
         globalSetup: "./tests/globalSetup.ts",
         setupFiles: ["./tests/setup.ts"],
+        fileParallelism: false, // important since i'm only using one test database and multiple test files running at the same time will cause concurrency issues
     },
 });
