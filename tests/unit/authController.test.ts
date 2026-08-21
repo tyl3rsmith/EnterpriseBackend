@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { Request, Response } from "express";
 import { signUpController, signInController } from "../../src/controllers/authController.js";
-import { createUser, findUserByEmail, findUserByUsername, findUserByEmailOrUsername } from "../../src/models/userModel.js";
+import { createUser, findUserByUsername, findUserByEmailOrUsername } from "../../src/models/userModel.js";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
@@ -65,7 +65,11 @@ describe("Auth Controllers", () => {
 
         vi.mocked(findUserByEmailOrUsername).mockResolvedValue({
             id: 1,
-        } as any);
+            username: "testuser",
+            email: "test@example.com",
+            password: "hashed-password",
+            created_at: new Date(),
+        });
 
         await signUpController(req, res);
 
@@ -102,7 +106,7 @@ describe("Auth Controllers", () => {
             username: "testuser",
             email: "test@example.com",
             created_at: new Date(),
-        });
+        } as Awaited<ReturnType<typeof createUser>>);
 
         await signUpController(req, res);
 

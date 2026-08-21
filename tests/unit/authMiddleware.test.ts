@@ -19,7 +19,12 @@ describe("Auth Middleware", () => {
 
         req = {
             headers: {},
-        } as AuthenticatedRequest;
+            params: {},
+            user: {
+                userId: 1,
+                username: "testuser",
+            },
+        } as unknown as AuthenticatedRequest;
 
         res = {
             status: vi.fn().mockReturnThis(),
@@ -62,10 +67,10 @@ describe("Auth Middleware", () => {
     it("should authenticate a valid token", () => {
         req.headers.authorization = "Bearer valid-token";
 
-        vi.mocked(jwt.verify).mockReturnValue({
+        vi.mocked(jwt.verify).mockImplementation(() => ({
             userId: 1,
             username: "testuser",
-        } as any);
+        }) as never);
 
         authenticateToken(req, res, next);
 
@@ -129,10 +134,10 @@ describe("Auth Middleware", () => {
     it("should use the JWT secret from environment variables", () => {
         req.headers.authorization = "Bearer valid-token";
 
-        vi.mocked(jwt.verify).mockReturnValue({
+        vi.mocked(jwt.verify).mockImplementation(() => ({
             userId: 1,
             username: "testuser",
-        } as any);
+        }) as never);
 
         process.env.JWT_SECRET = "my-test-secret";
 
@@ -149,10 +154,10 @@ describe("Auth Middleware", () => {
     it("should attach the decoded user information to req.user", () => {
         req.headers.authorization = "Bearer valid-token";
 
-        vi.mocked(jwt.verify).mockReturnValue({
+        vi.mocked(jwt.verify).mockImplementation(() => ({
             userId: 42,
             username: "tyler",
-        } as any);
+        }) as never);
 
         authenticateToken(req, res, next);
 

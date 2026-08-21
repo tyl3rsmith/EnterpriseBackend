@@ -40,7 +40,7 @@ export const createOrganization = async (name: string, userId: number): Promise<
 };
 
 export const addUserToOrganization = async (userId: number, organizationId: number, role: 'ADMIN' | 'MEMBER'): Promise<void> => {
-    const result = await pool.query(
+    await pool.query(
         `INSERT INTO memberships (user_id, organization_id, role)
         VALUES ($1, $2, $3)`,
         [userId, organizationId, role]

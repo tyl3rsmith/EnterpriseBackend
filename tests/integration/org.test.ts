@@ -492,14 +492,12 @@ describe("Organization Tests", () => {
         });
 
         it("should reject invalid organization ID", async () => {
-            const createOrgResponse = await request(app)
+            await request(app)
                 .post("/api/org/create")
                 .set("Authorization", `Bearer ${ownerJWT}`)
                 .send({
                     name: "My Organization"
                 });
-            
-            const organizationId = createOrgResponse.body.organization.id;
             
             await request(app)
                 .post("/api/auth/signup")
