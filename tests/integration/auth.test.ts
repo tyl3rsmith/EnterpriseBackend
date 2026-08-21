@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import request from "supertest";
 import app from "../../src/app.js";
+import jwt from "jsonwebtoken";
 
 describe("Authentication", () => {
     describe("POST /api/auth/signup", () => {
@@ -191,7 +192,7 @@ describe("Authentication", () => {
                 });
             
             // sign in this user
-            const signInRespomse = await request(app)
+            const signInResponse = await request(app)
                 .post("/api/auth/signin")
                 .send({
                     username: "testuser",
@@ -199,7 +200,7 @@ describe("Authentication", () => {
                 });
             
             // should give us a valid jwt
-            const jwt = signInRespomse.body.token;
+            const jwt = signInResponse.body.token;
 
             // try to access a protected route
             const response = await request(app)
@@ -208,6 +209,29 @@ describe("Authentication", () => {
             
             expect(response.statusCode).toBe(200);
             expect(response.body).toHaveProperty("message", "Organization creation endpoint is working!");
+        });
+
+        it("should reject an expired JWT", async () => {
+            const token = jwt.sign(
+                {
+                    userId: 1,
+                    username: "testuser",
+                },
+                process.env.JWT_SECRET as string,
+                {
+                    expiresIn: -1,
+                }
+            );
+
+            const response = await request(app)
+                .get("/api/org/create")
+                .set("Authorization", `Bearer ${token}`);
+
+            expect(response.statusCode).toBe(403);
+            expect(response.body).toHaveProperty(
+                "error",
+                "Invalid or expired token."
+            );
         });
 
         it("should reject access without a JWT", async () => {

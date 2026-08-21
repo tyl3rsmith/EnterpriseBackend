@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import request from "supertest";
 import app from "../../src/app.js";
+import jwt from "jsonwebtoken";
 
 describe("Organization Tests", () => {
     let ownerJWT: string;
@@ -104,6 +105,29 @@ describe("Organization Tests", () => {
     });
 
     describe("POST /api/org/:organizationId/invite", () => {
+        it("should reject an expired JWT", async () => {
+            const token = jwt.sign(
+                {
+                    userId: 1,
+                    username: "testuser",
+                },
+                process.env.JWT_SECRET as string,
+                {
+                    expiresIn: -1,
+                }
+            );
+
+            const response = await request(app)
+                .get("/api/org/create")
+                .set("Authorization", `Bearer ${token}`);
+
+            expect(response.statusCode).toBe(403);
+            expect(response.body).toHaveProperty(
+                "error",
+                "Invalid or expired token."
+            );
+        });
+
         it("should allow owners to invite users as MEMBER", async () => {
             // owner of org
             const createOrgResponse = await request(app)

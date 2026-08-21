@@ -16,13 +16,3 @@ export const getMembershipRole = async (userId: number, organizationId: number):
     );
     return result.rows[0]?.role ?? null;
 }
-
-export const getMembershipByUserAndOrganization = async (userId: number, organizationId: number): Promise<'OWNER' | 'ADMIN' | 'MEMBER' | null> => {
-    const result = await pool.query(
-        `SELECT * FROM memberhips
-        WHERE user_id = $1 AND organization_id = $2`,
-        [userId, organizationId]
-    )
-
-    return result.rows[0]?.role ?? null;
-}
