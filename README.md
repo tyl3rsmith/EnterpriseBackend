@@ -54,6 +54,7 @@ A backend REST API built with **Node.js, Express, TypeScript, and PostgreSQL**. 
 src/
 
 ├── app.ts
+├── server.ts
 │
 ├── config/
 │   ├── db.ts
@@ -61,17 +62,18 @@ src/
 │
 ├── controllers/
 │   ├── authController.ts
-│   ├── orgController.ts
-│   └── documentController.ts
+│   ├── documentController.ts
+│   └── orgController.ts
 │
 ├── middleware/
-│   └── authMiddleware.ts
+│   ├── authMiddleware.ts
+│   └── rbacMiddleware.ts
 │
 ├── models/
-│   ├── userModel.ts
+│   ├── documentModel.ts
+│   ├── membershipnModel.ts
 │   ├── organizationModel.ts
-│   ├── membershipModel.ts
-│   └── documentModel.ts
+│   └── userModel.ts
 │
 └── routes/
     ├── authRoutes.ts
